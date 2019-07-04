@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright (c) 2019 Unbxd Inc.
+ */
+-->
+
+<!--
+/**
+ * Init development:
+ * @author andy
+ * @email andyworkbase@gmail.com
+ * @team MageCloud
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <unbxd_analytics>
+            <general>
+                <enabled>1</enabled>
+                <api_endpoint>https://tracker.unbxdapi.com/v2/1p.jpg</api_endpoint>
+            </general>
+        </unbxd_analytics>
+    </default>
+</config>

@@ -1,0 +1,15 @@
+<?php
+
+// @codingStandardsIgnoreFile
+
+/** @var \Unbxd\Analytics\Block\Analytics $block */
+?>
+<script type = "text/javascript" >
+    var UnbxdSiteName = "<?= /* @escapeNotVerified */ $block->getSiteKey() ?>";
+    (function () {
+        var ubx = document.createElement('script'); ubx.type = 'text/javascript'; ubx.async = true;
+        ubx.src = '//d21gpk1vhmjuf5.cloudfront.net/unbxdAnalytics.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ubx);
+    })();
+</script>
+
