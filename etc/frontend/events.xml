@@ -17,6 +17,9 @@
     <event name="layout_load_before">
         <observer name="unbxd_analytics_product_page_view" instance="Unbxd\Analytics\Observer\OnProductPageViewObserver" />
     </event>
+    <event name="catalog_controller_product_view">
+        <observer name="unbxd_analytics_product_view_click" instance="Unbxd\Analytics\Observer\OnProductPageClickObserver" />
+    </event>
     <event name="checkout_cart_product_add_after">
         <observer name="unbxd_analytics_add_to_cart" instance="Unbxd\Analytics\Observer\OnAddToCartObserver" />
     </event>

@@ -17,6 +17,11 @@ namespace Unbxd\Analytics\Model;
  */
 class Config
 {
+    /**
+     * Analytics version (send as parameter of API request for separate events)
+     */
+    const ANALYTICS_VERSION       = '2.8.22';
+
     /**#@+
      * Constants for param keys of API request.
      */
@@ -28,10 +33,12 @@ class Config
     const PARAM_CURRENT_URL       = 'url';
     const PARAM_REFERRER_URL      = 'referrer';
     const PARAM_VISIT_TYPE        = 'visit_type';
+    const PARAM_VISIT_ID          = 'visitId';
     const PARAM_SITE_KEY          = 'UnbxdKey';
     const PARAM_ACTION            = 'action';
     const PARAM_CUSTOMER_ID       = 'uid';
     const PARAM_TIME              = 't';
+    const PARAM_VERSION           = 'ver';
     /**
      * extra parameters
      */
@@ -50,7 +57,7 @@ class Config
     /**
      * Analytics API default endpoint (will be used if related endpoint are not specified in config fields)
      */
-    const ANALYTICS_API_ENDPOINT_DEFAULT = 'https://tracker.unbxdapi.com/v2/1p.jpg';
+    const ANALYTICS_API_ENDPOINT_DEFAULT = 'http://tracker.unbxdapi.com/v2/1p.jpg';
 
     /**
      * API request type related to analytics

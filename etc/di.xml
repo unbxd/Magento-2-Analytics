@@ -18,16 +18,12 @@
     <type name="Unbxd\Analytics\Model\EventDataProvider">
         <arguments>
             <argument name="eventDataReaderPool" xsi:type="array">
+                <item name="click" xsi:type="object">Unbxd\Analytics\Model\EventDataProvider\ProductPageClick</item>
                 <item name="product_view" xsi:type="object">Unbxd\Analytics\Model\EventDataProvider\ProductPageView</item>
                 <item name="cart" xsi:type="object">Unbxd\Analytics\Model\EventDataProvider\AddToCart</item>
                 <item name="cartRemoval" xsi:type="object">Unbxd\Analytics\Model\EventDataProvider\RemoveFromCart</item>
                 <item name="order" xsi:type="object">Unbxd\Analytics\Model\EventDataProvider\OrderPlace</item>
             </argument>
-        </arguments>
-    </type>
-    <type name="Unbxd\Analytics\Model\EventDataProvider\AbstractProvider">
-        <arguments>
-            <argument name="registryKey" xsi:type="string">unbxd_analytics</argument>
         </arguments>
     </type>
     <!-- END: analytics -->

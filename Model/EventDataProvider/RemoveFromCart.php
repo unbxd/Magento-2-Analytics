@@ -55,8 +55,6 @@ class RemoveFromCart extends AbstractProvider implements EventDataProviderInterf
             $data[Config::PARAM_VARIANT_ID] = $quoteItemId;
         }
 
-        $this->addExtraParameters($data);
-
         $serializedData = $this->serializer->serialize($data);
         $eventData = [
             Config::PARAM_DATA => $serializedData,

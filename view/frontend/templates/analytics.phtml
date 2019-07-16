@@ -7,9 +7,23 @@
 <script type = "text/javascript" >
     var UnbxdSiteName = "<?= /* @escapeNotVerified */ $block->getSiteKey() ?>";
     (function () {
+        // append main analytics script
         var ubx = document.createElement('script'); ubx.type = 'text/javascript'; ubx.async = true;
         ubx.src = '//d21gpk1vhmjuf5.cloudfront.net/unbxdAnalytics.js';
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ubx);
+
+        // added search tracking
+        // NOTE: in case, if magento default functionality related to search has been changed, change the selector names
+        var searchInput = document.getElementById("search"),
+            searchHitButton = document.getElementsByClassName("action search"),
+            unbxdAttributeName = 'unbxdattr';
+
+        if (searchInput) {
+            searchInput.setAttribute(unbxdAttributeName, 'sq');
+        }
+        if (searchHitButton && searchHitButton.length) {
+            searchHitButton[0].setAttribute(unbxdAttributeName, 'sq_bt');
+        }
     })();
 </script>
 

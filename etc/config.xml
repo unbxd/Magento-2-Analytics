@@ -18,7 +18,7 @@
         <unbxd_analytics>
             <general>
                 <enabled>1</enabled>
-                <api_endpoint>https://tracker.unbxdapi.com/v2/1p.jpg</api_endpoint>
+                <api_endpoint>http://tracker.unbxdapi.com/v2/1p.jpg</api_endpoint>
             </general>
         </unbxd_analytics>
     </default>

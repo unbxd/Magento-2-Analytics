@@ -11,16 +11,16 @@
  */
 namespace Unbxd\Analytics\Observer;
 
-use Unbxd\Analytics\Model\EventDataProvider\AddToCart;
 use Unbxd\Analytics\Observer\AbstractObserver;
+use Unbxd\Analytics\Model\EventDataProvider\ProductPageClick;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 
 /**
- * Class OnProductPageViewObserver
- * @package Unbxd\ProductFeed\Observer
+ * Class OnProductPageClickObserver
+ * @package Unbxd\Analytics\Observer
  */
-class OnAddToCartObserver extends AbstractObserver implements ObserverInterface
+class OnProductPageClickObserver extends AbstractObserver implements ObserverInterface
 {
     /**
      * @param Observer $observer
@@ -34,16 +34,16 @@ class OnAddToCartObserver extends AbstractObserver implements ObserverInterface
             return $this;
         }
 
-        /** @var AddToCart $eventDataProvider */
-        $eventDataProvider = $this->getEventDataProvider(AddToCart::EVENT_TYPE_CODE);
+        /** @var ProductPageClick $eventDataProvider */
+        $eventDataProvider = $this->getEventDataProvider(ProductPageClick::EVENT_TYPE_CODE);
         if (null === $eventDataProvider) {
             return $this;
         }
 
-        /** @var \Magento\Quote\Model\Quote\Item $quoteItem */
-        $quoteItem = $observer->getEvent()->getQuoteItem();
+        /** @var \Magento\Catalog\Model\Product $product */
+        $product = $observer->getEvent()->getProduct();
 
-        $eventData = $eventDataProvider->buildEventData(['quote_item' => $quoteItem]);
+        $eventData = $eventDataProvider->buildEventData(['product' => $product]);
         if (empty($eventData)) {
             return $this;
         }

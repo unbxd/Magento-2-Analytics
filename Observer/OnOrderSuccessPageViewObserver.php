@@ -34,14 +34,14 @@ class OnOrderSuccessPageViewObserver extends AbstractObserver implements Observe
             return $this;
         }
 
-        $orderIds = $observer->getEvent()->getOrderIds();
-        if (empty($orderIds) || !is_array($orderIds)) {
-            return $this;
-        }
-
         /** @var OrderPlace $eventDataProvider */
         $eventDataProvider = $this->getEventDataProvider(OrderPlace::EVENT_TYPE_CODE);
         if (null === $eventDataProvider) {
+            return $this;
+        }
+
+        $orderIds = $observer->getEvent()->getOrderIds();
+        if (empty($orderIds) || !is_array($orderIds)) {
             return $this;
         }
 

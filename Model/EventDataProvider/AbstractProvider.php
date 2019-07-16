@@ -22,6 +22,7 @@ use Magento\Framework\Stdlib\CookieManagerInterface;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
 use Magento\Framework\Math\Random;
 use Unbxd\Analytics\Helper\Data as HelperData;
+use Magento\Catalog\Model\Session as CatalogSession;
 use Unbxd\Analytics\Model\Config;
 use Unbxd\ProductFeed\Model\Serializer;
 
@@ -97,9 +98,9 @@ abstract class AbstractProvider
     private $helperData;
 
     /**
-     * @var string
+     * @var CatalogSession
      */
-    private $registryKey;
+    private $catalogSession;
 
     /**
      * @var Serializer
@@ -119,6 +120,7 @@ abstract class AbstractProvider
      * @param OrderCollectionFactory $salesOrderCollection
      * @param Random $random
      * @param HelperData $helperData
+     * @param CatalogSession $catalogSession
      * @param $registryKey
      * @param Serializer|null $serializer
      */
@@ -134,7 +136,7 @@ abstract class AbstractProvider
         OrderCollectionFactory $salesOrderCollection,
         Random $random,
         HelperData $helperData,
-        $registryKey,
+        CatalogSession $catalogSession,
         Serializer $serializer = null
     ) {
         $this->layout = $layout;
@@ -148,43 +150,9 @@ abstract class AbstractProvider
         $this->salesOrderCollection = $salesOrderCollection;
         $this->random = $random;
         $this->helperData = $helperData;
-        $this->registryKey = $registryKey;
+        $this->catalogSession = $catalogSession;
         $this->serializer = $serializer ?: \Magento\Framework\App\ObjectManager::getInstance()
             ->get(Serializer::class);
-
-        if (!$this->getRegistryData()) {
-            $this->setRegistryData([
-                Config::PARAM_CURRENT_URL => $this->url->getCurrentUrl(),
-                Config::PARAM_REFERRER_URL => $this->redirect->getRefererUrl(),
-                Config::PARAM_PAGE => $this->getPageId()
-            ]);
-        }
-    }
-
-    /**
-     * @param null $key
-     * @return mixed
-     */
-    public function getRegistryData($key = null)
-    {
-        if (null === $key) {
-            $key = $this->registryKey;
-        }
-
-        return $this->registry->registry($key);
-    }
-
-    /**
-     * @param $data
-     * @param null $key
-     */
-    private function setRegistryData($data, $key = null)
-    {
-        if (null === $key) {
-            $key = $this->registryKey;
-        }
-
-        $this->registry->register($key, $data);
     }
 
     /**
@@ -307,18 +275,25 @@ abstract class AbstractProvider
     }
 
     /**
+     * Get default request parameters which are included in main data
+     *
      * @return array
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getDefaultDataParameters()
     {
         return [
             Config::PARAM_CURRENT_URL => $this->getCurrentUrl(),
             Config::PARAM_REFERRER_URL => $this->getReferrerUrl(),
-            Config::PARAM_VISIT_TYPE => $this->getCookie(Config::COOKIE_VISIT_TYPE, 'first_time')
+            Config::PARAM_VISIT_TYPE => $this->getCookie(Config::COOKIE_VISIT_TYPE, 'first_time'),
+            Config::PARAM_VERSION => Config::ANALYTICS_VERSION,
+            Config::PARAM_VISIT_ID => $this->getCookie(Config::COOKIE_VISIT_ID, $this->generateRandomString())
         ];
     }
 
     /**
+     * Get default request parameters which are not included in main data
+     *
      * @return array
      * @throws \Magento\Framework\Exception\LocalizedException
      */
@@ -342,9 +317,30 @@ abstract class AbstractProvider
     }
 
     /**
-     * In case if product was added from search results page - add additional parameters:
-     * 'query' - search query
-     * 'page' - unique identifier for the page
+     * Retrieve last visited category id
+     * Uses in events 'product click' and 'add to cart'
+     *
+     * @return int|null
+     */
+    private function getLastVisitedCategoryId()
+    {
+        $categoryId = $this->catalogSession->getLastVisitedCategoryId();
+        if (!$categoryId) {
+            /** @var \Magento\Catalog\Model\Category $category */
+            $category = $this->registry->registry('current_category');
+            $categoryId = null;
+            if ($category instanceof \Magento\Catalog\Model\Category) {
+                $categoryId = $category->getCategoryId();
+            }
+        }
+
+        return $categoryId;
+    }
+
+    /**
+     * In case if product was processed from category or search results page - add additional parameters:
+     * 'query' - search query (search results page)
+     * 'page' - unique identifier for the page (category page)
      *
      * @param array $params
      * @return $this
@@ -352,10 +348,25 @@ abstract class AbstractProvider
     public function addExtraParameters(array &$params)
     {
         $queryParams = $this->getRequest()->getQueryValue();
+        $referrerUrl = $this->getReferrerUrl();
+        // if query params for current request are empty, try to detect query params from referrer url (if any)
+        if (empty($queryParams) && (strlen($referrerUrl) > 0)) {
+            parse_str(parse_url($referrerUrl, PHP_URL_QUERY), $queryParams);
+        }
+
         if (!empty($queryParams)) {
-            $query = http_build_query($queryParams);
+            // search results page
+            if (isset($queryParams['q'])) {
+                $query = trim($queryParams['q']);
+            } else {
+                $query = http_build_query($queryParams);
+            }
             $params[Config::PARAM_QUERY] = $query;
-            $params[Config::PARAM_PAGE] = $this->getPageId();
+        } else {
+            // category view page
+            if ($pageId = $this->getLastVisitedCategoryId()) {
+                $params[Config::PARAM_PAGE] = $pageId;
+            }
         }
 
         return $this;
