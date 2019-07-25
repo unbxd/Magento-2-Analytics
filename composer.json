@@ -1,8 +1,8 @@
 {
   "name": "unbxd/magento2-analytics",
-  "description": "Magento 2 module which provide possibility tracking analytics for Unbxd service",
+  "description": "The Magento 2 module, which provides possibility tracking analytics for Unbxd service",
   "type": "magento2-module",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "license": [
     "OSL-3.0",
     "AFL-3.0"
