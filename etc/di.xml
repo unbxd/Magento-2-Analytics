@@ -18,6 +18,7 @@
     <type name="Unbxd\Analytics\Model\EventDataProvider">
         <arguments>
             <argument name="eventDataReaderPool" xsi:type="array">
+                <item name="categoryPage" xsi:type="object">Unbxd\Analytics\Model\EventDataProvider\CategoryPageView</item>
                 <item name="click" xsi:type="object">Unbxd\Analytics\Model\EventDataProvider\ProductPageClick</item>
                 <item name="product_view" xsi:type="object">Unbxd\Analytics\Model\EventDataProvider\ProductPageView</item>
                 <item name="cart" xsi:type="object">Unbxd\Analytics\Model\EventDataProvider\AddToCart</item>

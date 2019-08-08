@@ -20,7 +20,7 @@ php bin/magento cache:flush
 ### Manual installation
 
 1. Download module Unbxd_ProductFeed [Link](https://github.com/unbxd/Magento-2-Extension/archive/1.0.18.zip)
-2. Download this module [Link](https://github.com/unbxd/Magento-2-Analytics/archive/1.0.3.zip)
+2. Download this module [Link](https://github.com/unbxd/Magento-2-Analytics/archive/1.0.4.zip)
 3. Unzip modules in the folders:
 
     app\code\Unbxd\ProductFeed  

@@ -20,6 +20,9 @@
             <label>Analytics</label>
             <tab>unbxd</tab>
             <resource>Unbxd_Analytics::analytics</resource>
+            <group id="analytics_header" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+                <frontend_model>Unbxd\Analytics\Block\Adminhtml\System\Config\Fieldset\Analytics</frontend_model>
+            </group>
             <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>General Settings</label>
                 <fieldset_css>unbxd-fieldset</fieldset_css>

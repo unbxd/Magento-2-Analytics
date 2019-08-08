@@ -1,0 +1,21 @@
+<?php
+
+// @codingStandardsIgnoreFile
+
+/** @var \Unbxd\Analytics\Block\Adminhtml\System\Config\Fieldset\Analytics $block */
+?>
+<div class="unbxd-system-config-information-container analytics">
+    <div class="block header">
+        <h2>
+            <strong><?= /* @escapeNotVerified */ $block->getModuleInformation() ?></strong>&nbsp;
+            <span><?= /* @escapeNotVerified */ __('by') ?></span>
+        </h2>
+        <a class="logo" href="<?= /* @escapeNotVerified */ $block->getUnbxdReferenceUrl()?>" target="_blank">
+            <img src="<?php echo $block->getLogoSrc() ?>" alt="<?= /* @escapeNotVerified */ __('Unbxd') ?>" />
+        </a>
+    </div>
+    <div class="block content">
+        <p><?= /* @escapeNotVerified */ __('Have a question? Please refer to the <a href="%1">documentation</a>.',
+                $block->getUnbxdReferenceUrl('analytics_doc')) ?></p>
+    </div>
+</div>
