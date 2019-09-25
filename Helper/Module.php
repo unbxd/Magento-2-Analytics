@@ -17,6 +17,7 @@ use Magento\Framework\Module\Dir as ModuleDir;
 use Unbxd\ProductFeed\Model\Serializer;
 use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\App\ObjectManager;
+use Magento\Framework\DataObject;
 
 /**
  * Class Module
@@ -24,7 +25,11 @@ use Magento\Framework\App\ObjectManager;
  */
 class Module extends AbstractHelper
 {
-    const COMPOSER_FILE_NAME = 'composer.json';
+    /**#@+
+     * Composer filename
+     */
+    const COMPOSER_FILENAME = 'composer.json';
+    /**#@-*/
 
     /**
      * @var ComponentRegistrar
@@ -64,7 +69,6 @@ class Module extends AbstractHelper
     /**
      * Module constructor.
      * @param ComponentRegistrar $componentRegistrar
-     * @param \Magento\Framework\Module\Manager $moduleManager
      * @param \Magento\Framework\App\Helper\Context $context
      * @param ModuleDir\Reader $moduleReader
      * @param \Magento\Framework\Filesystem\Driver\File $fileSystem
@@ -72,7 +76,6 @@ class Module extends AbstractHelper
      */
     public function __construct(
         ComponentRegistrar $componentRegistrar,
-        \Magento\Framework\Module\Manager $moduleManager,
         \Magento\Framework\App\Helper\Context $context,
         \Magento\Framework\Module\Dir\Reader $moduleReader,
         \Magento\Framework\Filesystem\Driver\File $fileSystem,
@@ -80,7 +83,7 @@ class Module extends AbstractHelper
     ) {
         parent::__construct($context);
         $this->componentRegistrar = $componentRegistrar;
-        $this->moduleManager = $moduleManager;
+        $this->moduleManager = $context->getModuleManager();
         $this->moduleReader = $moduleReader;
         $this->fileSystem = $fileSystem;
         $this->serializer = $serializer ?: ObjectManager::getInstance()->get(Serializer::class);
@@ -116,24 +119,38 @@ class Module extends AbstractHelper
     }
 
     /**
+     * @param null $moduleName
+     * @param string $type
+     * @return string
+     */
+    public function getModuleDir($moduleName = null, $type = '')
+    {
+        if (null === $moduleName) {
+            $moduleName = $this->getModuleName();
+        }
+
+        return $this->moduleReader->getModuleDir($type, $moduleName);
+    }
+
+    /**
      * Read info about extension from composer json file
      *
      * @param null $moduleName
-     * @return array|\Magento\Framework\DataObject|null
+     * @return array|DataObject|null
      */
     public function getModuleInfo($moduleName = null)
     {
-        $moduleName = $moduleName ?: $this->getModuleName();
         if (!$this->moduleData) {
-            $this->moduleData = new \Magento\Framework\DataObject();
+            $moduleName = $moduleName ?: $this->getModuleName();
+            $this->moduleData = new DataObject();
             try {
-                $dir = $this->moduleReader->getModuleDir('', $moduleName);
-                $file = $dir . DIRECTORY_SEPARATOR . self::COMPOSER_FILE_NAME;
-                if ($this->fileSystem->isExists($file)) {
-                    $string = $this->fileSystem->fileGetContents($file);
-                    $moduleData = $this->serializer->unserialize($string);
+                $moduleDir = $this->getModuleDir($moduleName);
+                $composerPath = $moduleDir . DIRECTORY_SEPARATOR . self::COMPOSER_FILENAME;
+                if ($this->fileSystem->isExists($composerPath)) {
+                    $composerJsonContent = $this->fileSystem->fileGetContents($composerPath);
+                    $moduleData = $this->serializer->unserialize($composerJsonContent);
                     if ($moduleData) {
-                        $this->moduleData->setData($moduleData);
+                        $this->moduleData->addData($moduleData);
                     }
                 }
             } catch (\LogicException $e) {

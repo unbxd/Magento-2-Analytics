@@ -35,7 +35,7 @@ class Analytics extends Template implements RendererInterface
      */
     protected static $unbxdReferenceUrls = [
         'base' => '//unbxd.com',
-        'search_doc' => '//unbxd.com/documentation/site-search/v2-search-analytics-integration-browser/'
+        'analytics' => '//unbxd.com/documentation/site-search/v2-search-analytics-integration-browser/'
     ];
 
     /**
@@ -49,20 +49,18 @@ class Analytics extends Template implements RendererInterface
     private $assetRepository;
 
     /**
-     * Search constructor.
+     * Analytics constructor.
      * @param Context $context
      * @param ModuleHelper $moduleHelper
-     * @param AssetRepository $assetRepository
      * @param array $data
      */
     public function __construct(
         Context $context,
         ModuleHelper $moduleHelper,
-        AssetRepository $assetRepository,
         array $data = []
     ) {
         $this->moduleHelper = $moduleHelper;
-        $this->assetRepository = $assetRepository;
+        $this->assetRepository = $context->getAssetRepository();
         parent::__construct($context, $data);
     }
 
@@ -88,7 +86,8 @@ class Analytics extends Template implements RendererInterface
     }
 
     /**
-     * @return string
+     * @return \Magento\Framework\Phrase
+     * @throws \Zend_Json_Exception
      */
     public function getModuleInformation()
     {
@@ -100,6 +99,7 @@ class Analytics extends Template implements RendererInterface
 
     /**
      * @return mixed
+     * @throws \Zend_Json_Exception
      */
     public function getModuleVersion()
     {
@@ -112,6 +112,8 @@ class Analytics extends Template implements RendererInterface
      */
     public static function getUnbxdReferenceUrl($type = null)
     {
-        return isset(self::$unbxdReferenceUrls[$type]) ? self::$unbxdReferenceUrls['base'] : '';
+        return isset(self::$unbxdReferenceUrls[$type])
+            ? self::$unbxdReferenceUrls[$type]
+            : self::$unbxdReferenceUrls['base'];
     }
 }
